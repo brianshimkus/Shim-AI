@@ -7,17 +7,17 @@ import { set, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import axios from 'axios'
+import { ChatCompletionRequestMessage } from 'openai'
 
 import Heading from '@/components/heading'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
 import { formSchema } from './constants'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
 
 export default function ConversationPage() {
 	const router = useRouter()
-	const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([])
+	const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([])
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -30,7 +30,7 @@ export default function ConversationPage() {
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
-			const userMessage: ChatCompletionMessageParam = {
+			const userMessage: ChatCompletionRequestMessage = {
 				role: 'user',
 				content: values.prompt,
 			}
@@ -86,7 +86,11 @@ export default function ConversationPage() {
 					</form>
 				</Form>
 			</div>
-			<div className='space-y-4 mt-4'>Messages Content</div>
+			<div className='space-y-4 mt-4'>
+				{messages.map((message) => (
+					<div key={message.content}>{message.content}</div>
+				))}
+			</div>
 		</div>
 	)
 }
