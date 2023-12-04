@@ -2,7 +2,7 @@
 
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ImageIcon } from 'lucide-react'
+import { Download, ImageIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -22,10 +22,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
+import { Card, CardFooter } from '@/components/ui/card'
+import Image from 'next/image'
 
 export default function ImagePage() {
 	const router = useRouter()
-	const [images, setImages] = useState<string[]>([])
+	const [photos, setPhotos] = useState<string[]>([])
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -40,13 +42,13 @@ export default function ImagePage() {
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
-			setImages([])
+			setPhotos([])
 
 			const res = await axios.post('/api/image', values)
 
 			const urls = res.data.map((image: { url: string }) => image.url)
 
-			setImages(urls)
+			setPhotos(urls)
 			form.reset()
 		} catch (err: any) {
 			console.log(err)
@@ -163,10 +165,27 @@ export default function ImagePage() {
 							<Loader />
 						</div>
 					)}
-					{images.length === 0 && !isLoading && (
+					{photos.length === 0 && !isLoading && (
 						<Empty label='No images generated.' />
 					)}
-					<div>Images rendered here</div>
+					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8'>
+						{photos.map((src) => (
+							<Card key={src} className='rounded-lg overflow-hidden'>
+								<div className='relative aspect-square'>
+									<Image fill alt='Generated' src={src} />
+								</div>
+								<CardFooter className='p-2'>
+									<Button
+										onClick={() => window.open(src)}
+										variant='secondary'
+										className='w-full'>
+										<Download className='h-4 w-4 mr-2' />
+										Download
+									</Button>
+								</CardFooter>
+							</Card>
+						))}
+					</div>
 				</div>
 			</div>
 		</div>
