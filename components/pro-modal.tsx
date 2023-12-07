@@ -11,6 +11,7 @@ import {
 import { useProModal } from '@/hooks/use-pro-modal'
 import { Button } from './ui/button'
 import { Zap } from 'lucide-react'
+import { Badge } from './ui/badge'
 
 export default function ProModal() {
 	const proModal = useProModal()
@@ -22,6 +23,7 @@ export default function ProModal() {
 					<DialogTitle className='flex justify-center items-center flex-col gap-y-4 pb-2'>
 						<div className='flex items-center gap-x-2 font-bold text-xl'>
 							Upgrade to Genius
+							<Badge className='uppercase text-sm py-1'>pro</Badge>
 						</div>
 					</DialogTitle>
 					<DialogDescription className='text-center pt-2 space-y-2 text-zinc-900 font-medium'>
