@@ -15,8 +15,11 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Empty } from '@/components/empty'
 import { Loader } from '@/components/loader'
+import { useProModal } from '@/hooks/use-pro-modal'
+import toast from 'react-hot-toast'
 
 export default function VideoPage() {
+	const proModal = useProModal()
 	const router = useRouter()
 	const [video, setVideo] = useState<string>()
 
@@ -39,7 +42,11 @@ export default function VideoPage() {
 
 			form.reset()
 		} catch (err: any) {
-			console.log(err)
+			if (err?.res?.status === 403) {
+				proModal.onOpen()
+			} else {
+				toast.error('Something went wrong.')
+			}
 		} finally {
 			router.refresh()
 		}
