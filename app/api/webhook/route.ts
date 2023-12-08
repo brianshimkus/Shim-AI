@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   let event: Stripe.Event
 
   try {
-    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET)
+    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
   } catch (err: any) {
     return new NextResponse(err.message, { status: 400 })
   }
@@ -56,4 +56,6 @@ export async function POST(req: Request) {
       },
     })
   }
+
+  return new NextResponse(null, { status: 200 })
 }
